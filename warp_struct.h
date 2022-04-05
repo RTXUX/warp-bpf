@@ -9,9 +9,9 @@ struct warp_key {
             char __padding[12];
             __be32 addr;
         } ip4_addr;
-    } dst_addr;
-    __u16 src_port;
-    __u16 dst_port;
+    } remote_addr;
+    __u16 local_port;
+    __u16 remote_port;
 };
 
 typedef union {

@@ -35,17 +35,17 @@ int tc_egress(struct __sk_buff *skb) {
     if (eth_proto == bpf_htons(ETH_P_IP)) {
         ip_proto = parse_iphdr(&nh, data_end, &iphdr);
         if (ip_proto < 0 || ip_proto != IPPROTO_UDP) return TC_ACT_OK;
-        key.dst_addr.ip4_addr.addr = iphdr->daddr;
+        key.remote_addr.ip4_addr.addr = iphdr->daddr;
     } else if (eth_proto == bpf_htons(ETH_P_IPV6)) {
         ip_proto = parse_ip6hdr(&nh, data_end, &ip6hdr);
         if (ip_proto < 0 || ip_proto != IPPROTO_UDP) return TC_ACT_OK;
-        key.dst_addr.ip6_addr = ip6hdr->daddr;
+        key.remote_addr.ip6_addr = ip6hdr->daddr;
     } else return TC_ACT_OK;
     udp_len = parse_udphdr(&nh, data_end, &udphdr);
     if (udp_len < 0) return TC_ACT_OK;
     if (nh.pos + 4 > data_end) return TC_ACT_OK;
-    key.src_port = udphdr->source;
-    key.dst_port = udphdr->dest;
+    key.local_port = udphdr->source;
+    key.remote_port = udphdr->dest;
     prid = bpf_map_lookup_elem(&warp, &key);
     if (prid == NULL) return TC_ACT_OK;
     rid = *prid;
@@ -71,17 +71,17 @@ int tc_ingress(struct __sk_buff *skb) {
     if (eth_proto == bpf_htons(ETH_P_IP)) {
         ip_proto = parse_iphdr(&nh, data_end, &iphdr);
         if (ip_proto < 0 || ip_proto != IPPROTO_UDP) return TC_ACT_OK;
-        key.dst_addr.ip4_addr.addr = iphdr->saddr;
+        key.remote_addr.ip4_addr.addr = iphdr->saddr;
     } else if (eth_proto == bpf_htons(ETH_P_IPV6)) {
         ip_proto = parse_ip6hdr(&nh, data_end, &ip6hdr);
         if (ip_proto < 0 || ip_proto != IPPROTO_UDP) return TC_ACT_OK;
-        key.dst_addr.ip6_addr = ip6hdr->saddr;
+        key.remote_addr.ip6_addr = ip6hdr->saddr;
     } else return TC_ACT_OK;
     udp_len = parse_udphdr(&nh, data_end, &udphdr);
     if (udp_len < 0) return TC_ACT_OK;
     if (nh.pos + 4 > data_end) return TC_ACT_OK;
-    key.src_port = udphdr->dest;
-    key.dst_port = udphdr->source;
+    key.local_port = udphdr->dest;
+    key.remote_port = udphdr->source;
     prid = bpf_map_lookup_elem(&warp, &key);
     if (prid == NULL) return TC_ACT_OK;
     rid.v[0] = *((char*)nh.pos);
