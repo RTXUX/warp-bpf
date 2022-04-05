@@ -30,6 +30,7 @@ make
 2. Add tuple and routing id to BPF map
 
    - ` warp_bpf_cli add <remote_addr> <local_port> <remote_port> <routing id delimited with spaces> `
+   - IPv4 address show be presented in IPv6-compact format: `::a.b.c.d`
 
 3. Enjoy!
 
