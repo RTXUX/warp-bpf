@@ -1,5 +1,8 @@
 # Cloudflare Warp BPF Filter
 
+## Deprecation
+**Deprecated:** It turns out that `nft` support `payload statement` which can be used to alter packet content. It's much easier to use, so this tool is deprecated.
+
 ## Introduction
 A simple & stupid tool that mangles warp packets to emulate official Cloudflare Warp client.
 
